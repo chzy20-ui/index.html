@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>부산 여행 2026 🌊</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; background: #F0F4F8; min-height: 100vh; }
+.app { max-width: 430px; margin: 0 auto; background: #F0F4F8; min-height: 100vh; position: relative; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1B4F72 0%, #2E86C1 100%); padding: 20px 16px 16px; text-align: center; }
+.header h1 { color: #fff; font-size: 17px; font-weight: 600; letter-spacing: 0.3px; }
+.header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 4px; }
+.online-dot { display: inline-block; width: 7px; height: 7px; background: #2ECC71; border-radius: 50%; margin-right: 4px; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* Day tabs */
+.day-tabs { display: flex; background: #fff; border-bottom: 1px solid #E8ECF0; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.day-tab { flex: 1; padding: 10px 4px 8px; text-align: center; cursor: pointer; font-size: 12px; color: #8A9BB0; border-bottom: 3px solid transparent; transition: all 0.2s; }
+.day-tab .day-label { font-size: 10px; display: block; margin-top: 2px; }
+.day-tab.active { color: #1B4F72; border-bottom-color: #1B4F72; font-weight: 600; }
+.day-tab.active .day-label { color: #1B4F72; }
+
+/* Content */
+.content { padding-bottom: 32px; }
+.section-label { font-size: 11px; color: #8A9BB0; padding: 14px 16px 6px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+
+/* Ref box */
+.ref-box { margin: 4px 12px 8px; background: #FEF9E7; border: 1px solid #F9E79F; border-radius: 10px; padding: 10px 14px; display: flex; gap: 8px; align-items: flex-start; }
+.ref-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.ref-text { font-size: 13px; color: #7D6608; line-height: 1.5; }
+
+/* Timeline */
+.timeline { padding: 0 12px; display: flex; flex-direction: column; gap: 6px; }
+.item { background: #fff; border-radius: 12px; padding: 12px 14px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 1px 4px rgba(0,0,0,0.07); transition: transform 0.15s, box-shadow 0.15s; position: relative; }
+.item:active { transform: scale(0.985); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.item-left { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 38px; flex-shrink: 0; }
+.item-time { font-size: 11px; color: #8A9BB0; font-weight: 600; white-space: nowrap; }
+.item-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-food { background: #E67E22; }
+.dot-tour { background: #1B4F72; }
+.dot-stay { background: #27AE60; }
+.dot-transport { background: #8E44AD; }
+.item-body { flex: 1; min-width: 0; }
+.item-title { font-size: 14px; color: #1A2B3C; font-weight: 600; line-height: 1.4; }
+.item-sub { font-size: 12px; color: #8A9BB0; margin-top: 3px; line-height: 1.4; }
+.item-footer { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.item-tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+.tag-food { background: #FEF0E6; color: #C0652B; }
+.tag-tour { background: #EAF1F9; color: #1B4F72; }
+.tag-stay { background: #EAFAF1; color: #1E8449; }
+.tag-transport { background: #F4ECF7; color: #7D3C98; }
+.memo-count { font-size: 10px; color: #8A9BB0; background: #F0F4F8; padding: 2px 7px; border-radius: 10px; }
+.item-arrow { color: #C5D0DC; font-size: 16px; align-self: center; flex-shrink: 0; }
+
+/* Map */
+.map-section { margin: 4px 12px 8px; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.map-header { background: #fff; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #1A2B3C; }
+.map-body { background: #D6EAF8; position: relative; height: 220px; overflow: hidden; }
+.map-footer { background: #fff; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid #F0F4F8; }
+.map-pin-btn { font-size: 11px; color: #1B4F72; background: #EAF1F9; border-radius: 12px; padding: 4px 10px; cursor: pointer; border: none; font-weight: 500; transition: background 0.15s; }
+.map-pin-btn:hover { background: #1B4F72; color: #fff; }
+
+/* Overlay / Modal */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(15,25,40,0.5); z-index: 200; align-items: flex-end; backdrop-filter: blur(2px); }
+.overlay.open { display: flex; }
+.modal { background: #F0F4F8; border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; margin: 0 auto; max-height: 88vh; overflow-y: auto; padding-bottom: 32px; }
+.modal-handle { width: 40px; height: 4px; background: #C5D0DC; border-radius: 2px; margin: 12px auto 0; }
+.modal-top { background: #fff; padding: 12px 16px 14px; margin-bottom: 8px; }
+.modal-close { float: right; background: #F0F4F8; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 16px; cursor: pointer; color: #5A6A7A; display: flex; align-items: center; justify-content: center; margin-top: -2px; }
+.modal-title { font-size: 16px; font-weight: 700; color: #1A2B3C; padding-right: 36px; }
+.modal-meta { font-size: 12px; color: #8A9BB0; margin-top: 4px; }
+
+/* Naver button */
+.naver-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 12px 8px; background: #03C75A; color: #fff; border: none; border-radius: 12px; padding: 13px 16px; font-size: 14px; font-weight: 600; cursor: pointer; width: calc(100% - 24px); transition: background 0.15s; }
+.naver-btn:hover { background: #02b350; }
+.naver-logo { width: 20px; height: 20px; background: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; color: #03C75A; flex-shrink: 0; }
+
+/* Memo */
+.memo-box { background: #fff; margin: 0 12px 8px; border-radius: 12px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.memo-box h3 { font-size: 13px; font-weight: 600; color: #1A2B3C; margin-bottom: 10px; }
+.memo-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.memo-item { background: #F7F9FC; border-radius: 8px; padding: 9px 11px; }
+.memo-author { font-size: 11px; color: #1B4F72; font-weight: 600; margin-bottom: 2px; }
+.memo-text-content { font-size: 13px; color: #2C3E50; line-height: 1.5; }
+.memo-time { font-size: 10px; color: #B0BEC5; margin-top: 3px; }
+.empty-memo { text-align: center; padding: 16px 0; color: #B0BEC5; font-size: 13px; }
+.memo-input-section { border-top: 1px solid #F0F4F8; padding-top: 12px; }
+.memo-name-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+.memo-name-row input { width: 90px; border: 1.5px solid #E8ECF0; border-radius: 8px; padding: 8px 10px; font-size: 13px; color: #1A2B3C; background: #fff; outline: none; }
+.memo-name-row input:focus { border-color: #1B4F72; }
+.memo-name-label { font-size: 12px; color: #8A9BB0; }
+.memo-send-row { display: flex; gap: 8px; }
+.memo-send-row input { flex: 1; border: 1.5px solid #E8ECF0; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #1A2B3C; background: #fff; outline: none; }
+.memo-send-row input:focus { border-color: #1B4F72; }
+.memo-send-btn { background: #1B4F72; color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+.memo-send-btn:hover { background: #154060; }
+.loading-memo { text-align: center; padding: 12px; color: #B0BEC5; font-size: 12px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1A2B3C; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>🌊 부산 여행 2026</h1>
+    <p><span class="online-dot"></span>실시간 공유 중 · 2026년 5월 7일 ~ 9일</p>
+  </div>
+
+  <div class="day-tabs">
+    <div class="day-tab active" onclick="switchDay(1)">
+      5/7 (수)<span class="day-label">1일차</span>
+    </div>
+    <div class="day-tab" onclick="switchDay(2)">
+      5/8 (목)<span class="day-label">2일차</span>
+    </div>
+    <div class="day-tab" onclick="switchDay(3)">
+      5/9 (금)<span class="day-label">3일차</span>
+    </div>
+  </div>
+
+  <div class="content" id="dayContent"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-top">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+    </div>
+
+    <button class="naver-btn" onclick="openNaver()">
+      <div class="naver-logo">N</div>
+      네이버 지도에서 보기
+    </button>
+
+    <div class="memo-box">
+      <h3>💬 여행 메모</h3>
+      <div class="memo-list" id="memoList">
+        <div class="loading-memo">불러오는 중...</div>
+      </div>
+      <div class="memo-input-section">
+        <div class="memo-name-row">
+          <input type="text" id="memoName" placeholder="이름" maxlength="10" />
+          <span class="memo-name-label">으로 메모 남기기</span>
+        </div>
+        <div class="memo-send-row">
+          <input type="text" id="memoInput" placeholder="메모를 입력하세요..." maxlength="100" onkeydown="if(event.key==='Enter')addMemo()" />
+          <button class="memo-send-btn" onclick="addMemo()">등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHEht8ICeffOqFyQQva19QXuf_S3iWSNw",
+    authDomain: "busan-b2c51.firebaseapp.com",
+    databaseURL: "https://busan-b2c51-default-rtdb.firebaseio.com",
+    projectId: "busan-b2c51",
+    storageBucket: "busan-b2c51.firebasestorage.app",
+    messagingSenderId: "447004259938",
+    appId: "1:447004259938:web:500ffe61ca36c355a5833b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window._fbDb = db;
+  window._fbRef = ref;
+  window._fbPush = push;
+  window._fbOnValue = onValue;
+  window._fbTimestamp = serverTimestamp;
+  window._fbReady = true;
+  window.dispatchEvent(new Event('fbReady'));
+</script>
+
+<script>
+const days = {
+  1: {
+    refs: ['짐은 짐캐리(업체) 이용하여 숙소로 이동'],
+    items: [
+      { time: '11:00', title: '부산역 도착 · 이재모피자 점심', sub: '부산역 이재모피자', type: 'food', tag: '식사', naverQ: '부산역 이재모피자' },
+      { time: '13:00', title: '깡통시장 or 국제시장 관광', sub: '전통시장 구경 및 자유쇼핑', type: 'tour', tag: '관광', naverQ: '부산 깡통시장' },
+      { time: '17:00', title: '자갈치 or 해운대 저녁식사', sub: '식당 미정 · 현지에서 결정', type: 'food', tag: '식사', naverQ: '자갈치시장 맛집' },
+      { time: '19:00', title: '해운대 폴에이 리조트 체크인', sub: '체크인 후 해운대 자유시간', type: 'stay', tag: '숙소', naverQ: '해운대 폴에이 리조트' },
+    ],
+    mapPins: ['부산역', '깡통시장', '자갈치시장', '해운대'],
+    coords: [
+      {name:'부산역', x:110, y:155, c:'#E67E22'},
+      {name:'깡통시장', x:85, y:175, c:'#1B4F72'},
+      {name:'자갈치', x:72, y:188, c:'#E67E22'},
+      {name:'해운대', x:272, y:122, c:'#27AE60'},
+    ]
+  },
+  2: {
+    refs: [],
+    items: [
+      { time: '11:00', title: '해변열차 탑승', sub: '해운대 출발 → 청사포 방향', type: 'transport', tag: '이동', naverQ: '해운대 해변열차' },
+      { time: '12:00', title: '청사포 도착 · 조개구이 점심', sub: '청사포 조개구이 · 식당 미정', type: 'food', tag: '식사', naverQ: '청사포 조개구이 맛집' },
+      { time: '13:00', title: '다릿돌 전망대 · 송정해변 관광', sub: '해안 산책 및 전망대 방문', type: 'tour', tag: '관광', naverQ: '부산 다릿돌 전망대' },
+      { time: '15:00', title: '해운대 귀환 · 해운대해변 관광', sub: '해운대 해변 자유 관광', type: 'tour', tag: '관광', naverQ: '해운대해수욕장' },
+      { time: '17:00', title: '해운대 야키도리 백탄 저녁식사', sub: '식사 후 자유시간', type: 'food', tag: '식사', naverQ: '해운대 야키도리 백탄' },
+    ],
+    mapPins: ['해변열차', '청사포', '다릿돌 전망대', '송정해변', '해운대'],
+    coords: [
+      {name:'해운대', x:272, y:122, c:'#8E44AD'},
+      {name:'청사포', x:302, y:102, c:'#E67E22'},
+      {name:'다릿돌전망대', x:316, y:86, c:'#1B4F72'},
+      {name:'송정해변', x:328, y:70, c:'#1B4F72'},
+    ]
+  },
+  3: {
+    refs: ['짐은 짐캐리(업체) 이용하여 부산역으로 이동'],
+    items: [
+      { time: '11:00', title: '해운대 or 밀락더마켓 점심', sub: '식당 미정 · 현지에서 결정', type: 'food', tag: '식사', naverQ: '밀락더마켓 맛집' },
+      { time: '12:00', title: '광안리 이동 및 관광', sub: '광안리 해변 및 주변 관광', type: 'tour', tag: '관광', naverQ: '광안리 해변' },
+      { time: '15:00', title: '부산역 도착 · 친수공원 산책 or 남천동 빵투어', sub: '산책 혹은 베이커리 투어 선택', type: 'tour', tag: '관광', naverQ: '부산역 친수공원' },
+      { time: '17:00', title: '저녁식사', sub: '식당 미정 · 현지에서 결정', type: 'food', tag: '식사', naverQ: '부산역 근처 맛집' },
+      { time: '19:00', title: '부산역 도착 · 짐 찾기', sub: '짐캐리 업체에서 짐 수령', type: 'transport', tag: '이동', naverQ: '부산역' },
+      { time: '20:30', title: '기차 탑승 · 귀가', sub: '부산역 출발', type: 'transport', tag: '이동', naverQ: '부산역' },
+    ],
+    mapPins: ['밀락더마켓', '광안리', '부산역', '남천동'],
+    coords: [
+      {name:'밀락더마켓', x:236, y:138, c:'#E67E22'},
+      {name:'광안리', x:228, y:152, c:'#1B4F72'},
+      {name:'부산역', x:110, y:155, c:'#8E44AD'},
+      {name:'남천동', x:242, y:162, c:'#1B4F72'},
+    ]
+  }
+};
+
+let currentDay = 1;
+let currentKey = '';
+let currentNaverQ = '';
+let memoListener = null;
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function switchDay(d) {
+  currentDay = d;
+  document.querySelectorAll('.day-tab').forEach((t, i) => t.classList.toggle('active', i === d - 1));
+  renderDay(d);
+}
+
+function renderDay(d) {
+  const data = days[d];
+  let html = '';
+
+  if (data.refs.length) {
+    html += '<div class="section-label">📌 참고</div>';
+    data.refs.forEach(r => {
+      html += `<div class="ref-box"><span class="ref-icon">🚐</span><span class="ref-text">${r}</span></div>`;
+    });
+  }
+
+  html += '<div class="section-label">일정</div><div class="timeline">';
+  data.items.forEach((item, idx) => {
+    const key = `day${d}_item${idx}`;
+    html += `<div class="item" onclick="openModal(${d},${idx})">
+      <div class="item-left">
+        <div class="item-time">${item.time}</div>
+        <div class="item-dot dot-${item.type}"></div>
+      </div>
+      <div class="item-body">
+        <div class="item-title">${item.title}</div>
+        <div class="item-sub">${item.sub}</div>
+        <div class="item-footer">
+          <span class="item-tag tag-${item.type}">${item.tag}</span>
+          <span class="memo-count" id="mc_${key}">💬 메모 0</span>
+        </div>
+      </div>
+      <div class="item-arrow">›</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += `<div class="section-label">📍 위치 지도</div>
+  <div class="map-section">
+    <div class="map-header">${d}일차 주요 장소</div>
+    <div class="map-body">${buildMapSVG(d)}</div>
+    <div class="map-footer">`;
+  data.mapPins.forEach(p => {
+    html += `<button class="map-pin-btn" onclick="openNaverDirect('${p}')">${p}</button>`;
+  });
+  html += '</div></div><div style="height:8px"></div>';
+
+  document.getElementById('dayContent').innerHTML = html;
+
+  if (window._fbReady) attachMemoCounts(d);
+  else window.addEventListener('fbReady', () => attachMemoCounts(d), { once: true });
+}
+
+function attachMemoCounts(d) {
+  const data = days[d];
+  data.items.forEach((item, idx) => {
+    const key = `day${d}_item${idx}`;
+    const r = window._fbRef(window._fbDb, `memos/${key}`);
+    window._fbOnValue(r, snap => {
+      const cnt = snap.exists() ? Object.keys(snap.val()).length : 0;
+      const el = document.getElementById(`mc_${key}`);
+      if (el) el.textContent = `💬 메모 ${cnt}`;
+    });
+  });
+}
+
+function openModal(d, idx) {
+  currentKey = `day${d}_item${idx}`;
+  currentNaverQ = days[d].items[idx].naverQ;
+  const item = days[d].items[idx];
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalMeta').textContent = `${['','1일차 · 2026년 5월 7일','2일차 · 2026년 5월 8일','3일차 · 2026년 5월 9일'][d]} · ${item.time}`;
+  document.getElementById('memoList').innerHTML = '<div class="loading-memo">불러오는 중...</div>';
+  document.getElementById('overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  loadMemos();
+}
+
+function loadMemos() {
+  if (!window._fbReady) {
+    window.addEventListener('fbReady', loadMemos, { once: true });
+    return;
+  }
+  if (memoListener) memoListener();
+  const r = window._fbRef(window._fbDb, `memos/${currentKey}`);
+  memoListener = window._fbOnValue(r, snap => {
+    const list = document.getElementById('memoList');
+    if (!snap.exists()) {
+      list.innerHTML = '<div class="empty-memo">아직 메모가 없어요.<br>첫 메모를 남겨보세요! 🌊</div>';
+      return;
+    }
+    const items = Object.values(snap.val()).sort((a, b) => (a.ts || 0) - (b.ts || 0));
+    list.innerHTML = items.map(m => `
+      <div class="memo-item">
+        <div class="memo-author">${escHtml(m.name)}</div>
+        <div class="memo-text-content">${escHtml(m.text)}</div>
+        <div class="memo-time">${formatTime(m.ts)}</div>
+      </div>`).join('');
+    list.scrollTop = list.scrollHeight;
+  });
+}
+
+function addMemo() {
+  if (!window._fbReady) { showToast('잠시 후 다시 시도해 주세요'); return; }
+  const name = document.getElementById('memoName').value.trim() || '익명';
+  const text = document.getElementById('memoInput').value.trim();
+  if (!text) { showToast('메모를 입력해 주세요'); return; }
+  const r = window._fbRef(window._fbDb, `memos/${currentKey}`);
+  window._fbPush(r, { name, text, ts: Date.now() });
+  document.getElementById('memoInput').value = '';
+  showToast('메모가 등록됐어요 ✓');
+}
+
+function closeModal() {
+  document.getElementById('overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  if (memoListener) { memoListener(); memoListener = null; }
+}
+
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+
+function openNaver() {
+  window.open(`https://map.naver.com/v5/search/${encodeURIComponent(currentNaverQ)}`, '_blank');
+}
+function openNaverDirect(q) {
+  window.open(`https://map.naver.com/v5/search/${encodeURIComponent(q + ' 부산')}`, '_blank');
+}
+
+function buildMapSVG(d) {
+  const pins = days[d].coords;
+  let svg = `<svg width="100%" height="220" viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="380" height="220" fill="#C8E6F5"/>
+    <path d="M0,155 Q50,140 100,152 Q160,166 220,155 Q270,146 330,160 Q358,168 380,164 L380,220 L0,220Z" fill="#5DADE2" opacity="0.4"/>
+    <path d="M0,175 Q80,165 150,175 Q220,185 300,175 Q340,170 380,178 L380,220 L0,220Z" fill="#2E86C1" opacity="0.3"/>
+    <rect x="55" y="55" width="210" height="130" rx="6" fill="#E8D5B5" opacity="0.45"/>
+    <text x="190" y="206" text-anchor="middle" fill="#1A5276" font-size="9" font-family="sans-serif" opacity="0.7">부산 해안선</text>`;
+
+  if (pins.length > 1) {
+    for (let i = 0; i < pins.length - 1; i++) {
+      svg += `<line x1="${pins[i].x}" y1="${pins[i].y}" x2="${pins[i+1].x}" y2="${pins[i+1].y}" stroke="#1B4F72" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.45"/>`;
+    }
+  }
+
+  pins.forEach(p => {
+    const len = p.name.length;
+    const bw = Math.max(len * 7 + 10, 44);
+    svg += `
+    <circle cx="${p.x}" cy="${p.y}" r="10" fill="${p.c}" opacity="0.9"/>
+    <circle cx="${p.x}" cy="${p.y}" r="4" fill="#fff"/>
+    <rect x="${p.x - bw/2}" y="${p.y - 28}" width="${bw}" height="15" rx="4" fill="${p.c}" opacity="0.92"/>
+    <text x="${p.x}" y="${p.y - 18}" text-anchor="middle" fill="#fff" font-size="9" font-family="sans-serif" font-weight="600">${p.name}</text>`;
+  });
+
+  svg += '</svg>';
+  return svg;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+renderDay(1);
+</script>
+</body>
+</html>
